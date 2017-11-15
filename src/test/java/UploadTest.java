@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import ru.yandex.qatools.matchers.webdriver.TextMatcher;
 
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
@@ -36,10 +37,11 @@ public class UploadTest {
         ruleChrome.driver.findElement(By.xpath("//a[@class='flat_button secondary ']")).click();
         ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//a[contains(@class,'img_link')]")));
         ruleChrome.driver.findElement(By.xpath("(//a[contains(@class,'img_link')])[2]")).click();
+        ruleChrome.wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='box_layout']")));
         ruleChrome.wait.until(elementToBeClickable(By.xpath("//a[@class='ui_crumb']")));
         ruleChrome.driver.findElement(By.xpath("//a[@class='ui_crumb']")).click();
-        ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//span[@class='ui_crumb_count']")));
-        Assert.assertEquals("False", photoCount + 1, Integer.parseInt(ruleChrome.driver.findElement(By.xpath("(//span[@class='ui_crumb_count'])[2]")).getText()));
+        ruleChrome.wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath("//span[@class='ui_crumb_count']"), 1));
+        Assert.assertThat(ruleChrome.driver.findElement(By.xpath("(//span[@class='ui_crumb_count'])[2]")), TextMatcher.text(Integer.toString(photoCount + 1)));
     }
 
 }

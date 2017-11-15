@@ -5,7 +5,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import ru.yandex.qatools.matchers.webdriver.TextMatcher;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
@@ -28,8 +29,8 @@ public class MessageTest {
         ruleChrome.driver.findElement(By.xpath("//li[@id='l_msg']")).click();
         ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//input[@id='im_dialogs_search']")));
         ruleChrome.driver.findElement(By.xpath("//input[@id='im_dialogs_search']")).sendKeys("Дарья Лисовская");
-        ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//li[contains(@class, 'nim-dialog')]")));
-        ruleChrome.driver.findElement(By.xpath("(//li[contains(@class, 'nim-dialog')])[1]")).click();
+        ruleChrome.wait.until(ExpectedConditions.textToBe(By.xpath("(//span[@class='_im_dialog_link'])[1]"), "Дарья Лисовская"));
+        ruleChrome.driver.findElement(By.xpath("(//span[@class='_im_dialog_link'])[1]")).click();
         ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//div[@id='im_editable0']")));
         ruleChrome.driver.findElement(By.xpath("//div[@id='im_editable0']")).sendKeys(msgForDaria + Keys.ENTER);
         ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//button[contains(@class,'header-icon_search')]")));
@@ -37,6 +38,6 @@ public class MessageTest {
         ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//input[@id='im_history_search']")));
         ruleChrome.driver.findElement(By.xpath("//input[@id='im_history_search']")).sendKeys(msgForDaria +Keys.ENTER);
         ruleChrome.wait.until(presenceOfElementLocated(By.xpath("//div[contains(@class, 'text wall_module')]")));
-        Assert.assertEquals("False", msgForDaria, ruleChrome.driver.findElement(By.xpath("(//div[contains(@class, 'im-mess')])[last()]")).getText());
+        Assert.assertThat(ruleChrome.driver.findElement(By.xpath("(//div[contains(@class, 'im-mess')])[last()]")), TextMatcher.text(msgForDaria));
     }
 }
