@@ -1,4 +1,5 @@
 import io.kantemirov.Account;
+import io.kantemirov.Authorization;
 import io.kantemirov.RuleChrome;
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.Rule;
@@ -14,10 +15,12 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static ru.yandex.qatools.matchers.webdriver.TextMatcher.text;
 
 public class UploadTest {
+    private static final String TESTIMAGEPATH = "C:\\Users\\Ilia\\view1.jpg";
     private Account account = ConfigFactory.create(Account.class, System.getProperties());
     private int photoCount;
     private WebDriver driver;
     private WebDriverWait wait;
+    private Authorization authorization;
 
     @Rule
     public RuleChrome ruleChrome = new RuleChrome();
@@ -25,15 +28,16 @@ public class UploadTest {
     @Test
     public void shouldCountUploadedPhoto() {
         driver = ruleChrome.getDriver();
-        wait = ruleChrome.getWait();
+        wait = new WebDriverWait(driver, 20);
+        authorization = new Authorization(driver);
+
         wait.until(presenceOfElementLocated(By.xpath("//li[@id='l_ph']")));
         driver.findElement(By.xpath("//li[@id='l_ph']")).click();
         wait.until(presenceOfElementLocated(By.xpath("//span[@class='ui_crumb_count']")));
         photoCount = Integer.parseInt(driver.findElement(By.xpath(
                 "(//span[@class='ui_crumb_count'])[2]")).getText());
         wait.until(presenceOfElementLocated(By.xpath("//input[@id='photos_upload_input']")));
-        driver.findElement(By.xpath("//input[@id='photos_upload_input']")).sendKeys(
-                "C:\\Users\\Ilia\\view1.jpg");
+        driver.findElement(By.xpath("//input[@id='photos_upload_input']")).sendKeys(TESTIMAGEPATH);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
                 "//a[@class='flat_button secondary ']")));
         driver.findElement(By.xpath("//a[@class='flat_button secondary ']")).click();

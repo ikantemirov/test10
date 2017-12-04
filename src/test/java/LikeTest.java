@@ -1,3 +1,4 @@
+import io.kantemirov.Authorization;
 import io.kantemirov.RuleChrome;
 import org.junit.Before;
 import org.junit.Rule;
@@ -15,6 +16,7 @@ public class LikeTest {
     private int postLikeCounter;
     private WebDriver driver;
     private WebDriverWait wait;
+    private Authorization authorization;
 
     @Rule
     public RuleChrome ruleChrome = new RuleChrome();
@@ -23,7 +25,8 @@ public class LikeTest {
     public void before() {
         postLikeCounter = 0;
         driver = ruleChrome.getDriver();
-        wait = ruleChrome.getWait();
+        wait = new WebDriverWait(driver, 20);
+        authorization = new Authorization(driver);
 
         wait.until(elementToBeClickable(By.xpath("//li[@id='l_pr']")));
         driver.findElement(By.xpath("//li[@id='l_pr']")).click();
@@ -41,14 +44,14 @@ public class LikeTest {
     }
 
     @Test
-    public void shouldCheckLikeIsCounted() {
+    public void shouldCountLike() {
         assertThat(driver.findElement(By.xpath(
                 "//div[@id='wk_content']//span[contains(@class, 'post_like_count')]")),
                 text(Integer.toString(postLikeCounter + 1)));
     }
 
     @Test
-    public void shouldCheckUnlikeIsCounted(){
+    public void shouldCountUnlike(){
         assertThat(driver.findElement(By.xpath(
                 "//div[@id='wk_content']//span[contains(@class, 'post_like_count')]")),
                 text(Integer.toString(postLikeCounter - 1)));
